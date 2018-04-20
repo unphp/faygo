@@ -100,6 +100,7 @@ func (rs *SessionStore) SessionID() string {
 func (rs *SessionStore) SessionRelease(w http.ResponseWriter) {
 	b, err := session.EncodeGob(rs.values)
 	if err != nil {
+		//fmt.Println("=======rrrr", err)
 		return
 	}
 	c := rs.p.Get()
@@ -182,6 +183,7 @@ func (rp *Provider) SessionRead(sid string) (session.Store, error) {
 		kv = make(map[interface{}]interface{})
 	} else {
 		kv, err = session.DecodeGob([]byte(kvs))
+		//fmt.Println(kvs, kv, "================kkk")
 		if err != nil {
 			return nil, err
 		}

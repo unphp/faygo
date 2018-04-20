@@ -22,6 +22,7 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"encoding/gob"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -43,26 +44,70 @@ func init() {
 
 // EncodeGob encode the obj to gob
 func EncodeGob(obj map[interface{}]interface{}) ([]byte, error) {
-	for _, v := range obj {
-		gob.Register(v)
+	// for _, v := range obj {
+	// 	gob.Register(v)
+	// }
+	// buf := bytes.NewBuffer(nil)
+	// enc := gob.NewEncoder(buf)
+	// err := enc.Encode(obj)
+	// if err != nil {
+	// 	return []byte(""), err
+	// }
+	// return buf.Bytes(), nil
+	jsonObj := make(map[string]interface{})
+	for k, v := range obj {
+		var k2 string
+		//类型判断
+		switch t := k.(type) {
+		case int:
+			k2 = strconv.Itoa(t)
+		case int64:
+			k2 = strconv.FormatInt(t, 10)
+		case string:
+			k2 = t
+		case float32:
+			k2 = strconv.Itoa(int(t))
+		case float64:
+			k2 = strconv.Itoa(int(t))
+		case []byte:
+			k2 = string(t)
+		case bool:
+			if t {
+				k2 = "1"
+			}
+			k2 = "0"
+		}
+		//
+		jsonObj[k2] = v
 	}
-	buf := bytes.NewBuffer(nil)
-	enc := gob.NewEncoder(buf)
-	err := enc.Encode(obj)
+	out, err := json.Marshal(jsonObj)
 	if err != nil {
 		return []byte(""), err
+		//fmt.Println(err, "--------------------aaa")
 	}
-	return buf.Bytes(), nil
+	return out, nil
 }
 
 // DecodeGob decode data to map
 func DecodeGob(encoded []byte) (map[interface{}]interface{}, error) {
-	buf := bytes.NewBuffer(encoded)
-	dec := gob.NewDecoder(buf)
-	var out map[interface{}]interface{}
-	err := dec.Decode(&out)
+	// buf := bytes.NewBuffer(encoded)
+	// dec := gob.NewDecoder(buf)
+	// var out map[interface{}]interface{}
+	// err := dec.Decode(&out)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// return out, nil
+	jsonObj := make(map[string]interface{}, 0)
+	out := make(map[interface{}]interface{})
+	err := json.Unmarshal(encoded, &jsonObj)
 	if err != nil {
+		//fmt.Println(err, "--------------------bbb")
 		return nil, err
+	}
+	//fmt.Println(jsonObj, "===================pppp")
+	for k, v := range jsonObj {
+		out[k] = v
 	}
 	return out, nil
 }
