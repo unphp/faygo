@@ -538,8 +538,16 @@ func (paramsAPI *ParamsAPI) BindFields(
 				if err = convertAssign(value, paramValues); err != nil {
 					return param.myError(err.Error())
 				}
-			} else if param.IsRequired() {
-				return param.myError("missing formData param")
+			} else {
+				if _default, _ok := param.Default(); _ok {
+					if err = convertAssign(value, []string{_default}); err != nil {
+						return param.myError(err.Error())
+					}
+				} else {
+					if param.IsRequired() {
+						return param.myError("missing formData param")
+					}
+				}
 			}
 
 		case "body":

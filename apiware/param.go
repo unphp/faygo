@@ -38,6 +38,7 @@ const (
 	KEY_REGEXP       = "regexp"   // verify the value of the param with a regular expression(param value can not be null)
 	KEY_MAXMB        = "maxmb"    // when request Content-Type is multipart/form-data, the max memory for body.(multi-param, whichever is greater)
 	KEY_ERR          = "err"      // the custom error for binding or validating
+	KEY_DEFAULT      = "default"  // 默认值
 
 	MB                 = 1 << 20 // 1MB
 	defaultMaxMemory   = 32 * MB // 32 MB
@@ -174,6 +175,14 @@ func (param *Param) Name() string {
 // In get the type value for the param
 func (param *Param) In() string {
 	return param.tags[KEY_IN]
+}
+
+//Default ...
+func (param *Param) Default() (string, bool) {
+	if v, ok := param.tags[KEY_DEFAULT]; ok {
+		return v, true
+	}
+	return "", false
 }
 
 // IsRequired tests if the param is declared
