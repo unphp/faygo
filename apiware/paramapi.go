@@ -263,7 +263,8 @@ func (paramsAPI *ParamsAPI) addFields(parentIndexPath []int, t reflect.Type, v r
 
 		_, fd.isRequired = parsedTags[KEY_REQUIRED]
 		_, hasNonzero := parsedTags[KEY_NONZERO]
-		if !fd.isRequired && (hasNonzero || len(parsedTags[KEY_RANGE]) > 0) {
+		//增加默认值，则不是必填字段
+		if !fd.isRequired && (hasNonzero || len(parsedTags[KEY_RANGE]) > 0) && len(parsedTags[KEY_DEFAULT]) == 0 {
 			fd.isRequired = true
 		}
 
