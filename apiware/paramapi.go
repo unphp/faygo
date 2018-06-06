@@ -537,7 +537,20 @@ func (paramsAPI *ParamsAPI) BindFields(
 			paramValues, ok := req.PostForm[param.name]
 			if ok {
 				if err = convertAssign(value, paramValues); err != nil {
-					return param.myError(err.Error())
+					//
+					if paramValues[0] == "" {
+						if _default, _ok := param.Default(); _ok {
+							if err = convertAssign(value, []string{_default}); err != nil {
+								return param.myError(err.Error())
+							}
+						} else {
+							if param.IsRequired() {
+								return param.myError("missing formData param")
+							}
+						}
+					} else {
+						return param.myError(err.Error())
+					}
 				}
 			} else {
 				if _default, _ok := param.Default(); _ok {
