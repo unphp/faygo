@@ -39,6 +39,7 @@ const (
 	KEY_MAXMB        = "maxmb"    // when request Content-Type is multipart/form-data, the max memory for body.(multi-param, whichever is greater)
 	KEY_ERR          = "err"      // the custom error for binding or validating
 	KEY_DEFAULT      = "default"  // 默认值
+	KEY_TITLE        = "title"    // 标题
 
 	MB                 = 1 << 20 // 1MB
 	defaultMaxMemory   = 32 * MB // 32 MB
@@ -185,6 +186,15 @@ func (param *Param) Default() (string, bool) {
 	return "", false
 }
 
+//Title ...
+func (param *Param) Title() string {
+	if v, ok := param.tags[KEY_TITLE]; ok {
+		return v
+	} else {
+		return ""
+	}
+}
+
 // IsRequired tests if the param is declared
 func (param *Param) IsRequired() bool {
 	return param.isRequired
@@ -192,7 +202,11 @@ func (param *Param) IsRequired() bool {
 
 // Description gets the description value for the param
 func (param *Param) Description() string {
-	return param.tags[KEY_DESC]
+	if v, ok := param.tags[KEY_DESC]; ok {
+		return v
+	} else {
+		return ""
+	}
 }
 
 // IsFile tests if the param is type *multipart.FileHeader
