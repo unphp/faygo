@@ -709,6 +709,7 @@ func (ctx *Context) fixFilename(fh *multipart.FileHeader) {
 // BindJSON reads JSON from request's body
 func (ctx *Context) BindJSON(jsonObject interface{}) error {
 	rawData, _ := ioutil.ReadAll(ctx.R.Body)
+	//fmt.Println(string(rawData))
 	// check if jsonObject is already a pointer, if yes then pass as it's
 	if reflect.TypeOf(jsonObject).Kind() == reflect.Ptr {
 		err := json.Unmarshal(rawData, jsonObject)

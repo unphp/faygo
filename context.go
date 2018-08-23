@@ -253,6 +253,15 @@ func (ctx *Context) DelSession(key interface{}) {
 	ctx.curSession.Delete(key)
 }
 
+// SessionRelease save session.
+//
+func (ctx *Context) SessionRelease() {
+	if _, err := ctx.getSessionStore(); err != nil {
+		return
+	}
+	ctx.curSession.SessionRelease(ctx.W)
+}
+
 // SessionRegenerateID regenerates session id for this session.
 // the session data have no changes.
 func (ctx *Context) SessionRegenerateID() {
